@@ -10,39 +10,47 @@ fn read_fasta(file_path: &Path) -> io::Result<String> {
     for line in reader.lines() {
         let line = line?;
         if !line.starts_with('>') {
-            sequence.push_str(&line);
+            sequence.push_str(&line.trim());
         }
     }
 
     Ok(sequence)
 }
 
-fn find_cpg_islands(sequence: &str, island_length: usize) -> Vec<usize> {
+fn find_cpg_islands(sequence: &str, min_length: usize) -> Vec<(usize, usize)> {
     let mut cpg_islands = Vec::new();
-    let mut count = 0;
+    let mut start = None;
 
-    for (i, window) in sequence.as_bytes().windows(2).enumerate() {
-        if window == b"CG" {
-            count += 1;
-        } else {
-            if count >= island_length {
-                cpg_islands.push(i - count + 1);
+    for i in 0..=sequence.len().saturating_sub(min_length) {
+        let window = &sequence[i..i + min_length];
+        let gc_count = window.chars().filter(|&c| c == 'G' || c == 'C').count();
+        let cpg_count = window.matches("CG").count();
+        
+        let gc_content = gc_count as f64 / min_length as f64;
+        let expected_cpg = ((gc_count as f64 / 2.0).powi(2)) / min_length as f64;
+        let cpg_ratio = cpg_count as f64 / expected_cpg;
+
+        if gc_content >= 0.5 && cpg_ratio >= 0.6 {
+            if start.is_none() {
+                start = Some(i);
             }
-            count = 0;
+        } else if let Some(s) = start {
+            cpg_islands.push((s, i + min_length - 1));
+            start = None;
         }
     }
 
-    if count >= island_length {
-        cpg_islands.push(sequence.len() - count);
+    if let Some(s) = start {
+        cpg_islands.push((s, sequence.len() - 1));
     }
 
     cpg_islands
 }
 
-fn write_positions_to_file(positions: &[usize], output_path: &Path) -> io::Result<()> {
+fn write_positions_to_file(positions: &[(usize, usize)], output_path: &Path) -> io::Result<()> {
     let mut file = File::create(output_path)?;
-    for &position in positions {
-        writeln!(file, "{}", position)?;
+    for &(start, end) in positions {
+        writeln!(file, "{} {}", start, end)?;
     }
     Ok(())
 }
@@ -58,6 +66,9 @@ fn main() -> io::Result<()> {
     let fasta_path = Path::new("input.fasta");
     let output_path = Path::new("output.txt");
     let island_length = 200;
+
+    let sequence = read_fasta(fasta_path)?;
+    println!("{}", sequence);
 
     cpg(fasta_path, output_path, island_length)?;
 
