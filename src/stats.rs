@@ -13,12 +13,12 @@ fn GC_percent(sequence: &str) -> i32 {
     sequence.chars().filter(|&c| c == 'G' || c == 'C').count();
 }
 
-fn main() {
+// fn main() {
 
-    let fasta_path = Path::new("input.fasta");
+//     let fasta_path = Path::new("input.fasta");
 
-    let mut reader = fasta::Reader::new(&fasta_path)
-                        .expect("Coudn't find the path to file.");
+//     let mut reader = fasta::Reader::new(&fasta_path)
+//                         .expect("Coudn't find the path to file.");
 
 
-}
+// }

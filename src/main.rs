@@ -2,20 +2,22 @@ use std::fs::File;
 use std::io::{self, BufRead, BufReader, Write};
 use std::path::Path;
 
-fn read_fasta(file_path: &Path) -> io::Result<String> {
-    let file = File::open(file_path)?;
-    let reader = BufReader::new(file);
-    let mut sequence = String::new();
+mod finder;
 
-    for line in reader.lines() {
-        let line = line?;
-        if !line.starts_with('>') {
-            sequence.push_str(&line.trim());
-        }
-    }
+// fn read_fasta(file_path: &Path) -> io::Result<String> {
+//     let file = File::open(file_path)?;
+//     let reader = BufReader::new(file);
+//     let mut sequence = String::new();
 
-    Ok(sequence)
-}
+//     for line in reader.lines() {
+//         let line = line?;
+//         if !line.starts_with('>') {
+//             sequence.push_str(&line.trim());
+//         }
+//     }
+
+//     Ok(sequence)
+// }
 
 fn find_cpg_islands(sequence: &str, min_length: usize) -> Vec<(usize, usize)> {
     let mut cpg_islands = Vec::new();
@@ -47,20 +49,20 @@ fn find_cpg_islands(sequence: &str, min_length: usize) -> Vec<(usize, usize)> {
     cpg_islands
 }
 
-fn write_positions_to_file(positions: &[(usize, usize)], output_path: &Path) -> io::Result<()> {
-    let mut file = File::create(output_path)?;
-    for &(start, end) in positions {
-        writeln!(file, "{} {}", start, end)?;
-    }
-    Ok(())
-}
+// fn write_positions_to_file(positions: &[(usize, usize)], output_path: &Path) -> io::Result<()> {
+//     let mut file = File::create(output_path)?;
+//     for &(start, end) in positions {
+//         writeln!(file, "{} {}", start, end)?;
+//     }
+//     Ok(())
+// }
 
-fn cpg(fasta_path: &Path, output_path: &Path, island_length: usize) -> io::Result<()> {
-    let sequence = read_fasta(fasta_path)?;
-    let cpg_islands = find_cpg_islands(&sequence, island_length);
-    write_positions_to_file(&cpg_islands, output_path)?;
-    Ok(())
-}
+// fn cpg(fasta_path: &Path, output_path: &Path, island_length: usize) -> io::Result<()> {
+//     let sequence = read_fasta(fasta_path)?;
+//     let cpg_islands = find_cpg_islands(&sequence, island_length);
+//     write_positions_to_file(&cpg_islands, output_path)?;
+//     Ok(())
+// }
 
 fn main() -> io::Result<()> {
     let fasta_path = Path::new("input.fasta");
