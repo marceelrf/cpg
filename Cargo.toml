@@ -2,14 +2,24 @@
 name = "cpg"
 version = "0.1.0"
 edition = "2021"
+description = "CpG island analysis toolkit"
+authors = ["Marcel"]
+
+[[bin]]
+name = "cpg"
+path = "src/main.rs"
+
+[lib]
+name = "cpg"
+path = "src/lib.rs"
 
 [dependencies]
-noodles = { version = "0.89", features = ["fasta"] }
-clap = { version = "4", features = ["derive"] }
-anyhow = "1"
-serde = { version = "1", features = ["derive"] }
-serde_json = "1" 
+clap    = { version = "4", features = ["derive"] }
+anyhow  = "1"
+bio     = "2"
+serde   = { version = "1", features = ["derive"] }
+serde_json = "1"
 
 [dev-dependencies]
-assert_cmd = "2"   # testes de integração do CLI
+assert_cmd = "2"
 predicates = "3"
