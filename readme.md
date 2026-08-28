@@ -6,7 +6,8 @@ three subcommands: island detection, sequence statistics, and sliding-window pro
 ## Install
 
 ```bash
-cargo install --path .
+# Soon
+# cargo install --path .
 ```
 
 ## Subcommands
