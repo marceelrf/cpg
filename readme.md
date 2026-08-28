@@ -14,9 +14,9 @@ Download the binary for your system from the
 [latest release](https://github.com/marceelrf/cpg/releases/latest):
 
 ### Linux / macOS
-curl -LO https://github.com/marceelrf/cpg/releases/download/v0.1.0/cpg-linux-x86_64
-chmod +x cpg-linux-x86_64
-mv cpg-linux-x86_64 ~/.local/bin/cpg
+curl -LO https://github.com/marceelrf/cpg/releases/download/v0.1.0/cpg-linux-x86_64  
+chmod +x cpg-linux-x86_64  
+mv cpg-linux-x86_64 ~/.local/bin/cpg  
 
 ## Subcommands
 
