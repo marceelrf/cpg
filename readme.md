@@ -5,10 +5,13 @@ three subcommands: island detection, sequence statistics, and sliding-window pro
 
 ## Install
 
+<!--
 ```bash
 # Soon
 # cargo install --path .
 ```
+-->
+
 
 Download the binary for your system from the
 [latest release](https://github.com/marceelrf/cpg/releases/latest):
