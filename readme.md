@@ -29,6 +29,7 @@ mv cpg-linux-x86_64 ~/.local/bin/cpg
 
 ```bash
 # Built-in preset (default: Gardiner-Garden & Frommer 1987)
+# Default: Gardiner-Garden & Frommer 1987
 cpg finder -i genome.fa
 
 # Takai & Jones 2002
@@ -39,6 +40,9 @@ cpg finder -i genome.fa --min-length 300 --min-gc 0.52 --min-obs-exp 0.62
 
 # Mix: start from a preset and override one threshold
 cpg finder -i genome.fa --criteria takai --min-length 300
+
+# BED output — open directly in IGV or bedtools
+cpg finder -i genome.fa --output bed > islands.bed
 ```
 
 Built-in presets:
@@ -64,15 +68,26 @@ Outputs: `ID`, `Length`, `CG_count`, `GC%`, `Obs/Exp`.
 # Obs/Exp in 200 bp windows stepping 50 bp (default)
 cpg profiler -i genome.fa --window 200 --step 50 --metric obs_exp
 
-# GC% in 100 bp windows, TSV output (easy to pipe into R/Python)
+# GC% — TSV output, easy to pipe into R or Python
 cpg profiler -i genome.fa -w 100 -s 10 -m gc_percent --output tsv
+
+# BEDGRAPH output — load directly into IGV or UCSC Genome Browser
+cpg profiler -i genome.fa -w 200 -s 50 -m obs_exp --output bedgraph > profile.bedgraph
 ```
 
 Metrics: `cg_count`, `gc_percent`, `obs_exp`.
 
 ## Output formats
 
-All subcommands accept `--output table|tsv|json` (global flag).
+| Format      | Available in       | Use case                          |
+|-------------|-------------------|-----------------------------------|
+| `table`     | all               | terminal / quick inspection       |
+| `tsv`       | all               | R, Python, Excel                  |
+| `json`      | all               | downstream scripts                |
+| `bed`       | finder            | IGV, bedtools, UCSC               |
+| `bedgraph`  | profiler          | IGV, UCSC Genome Browser          |
+
+All subcommands accept `--output` as a global flag.
 
 
 # Funding
