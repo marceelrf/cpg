@@ -16,12 +16,22 @@ three subcommands: island detection, sequence statistics, and sliding-window pro
 Download the binary for your system from the
 [latest release](https://github.com/marceelrf/cpg/releases/latest):
 
-### Linux / macOS
+**Linux**
 ```bash
-curl -LO https://github.com/marceelrf/cpg/releases/download/v0.1.0/cpg-linux-x86_64  
-chmod +x cpg-linux-x86_64  
-mv cpg-linux-x86_64 ~/.local/bin/cpg  
+curl -LO https://github.com/marceelrf/cpg/releases/latest/download/cpg-linux-x86_64
+chmod +x cpg-linux-x86_64
+mv cpg-linux-x86_64 ~/.local/bin/cpg
 ```
+
+**macOS**
+```bash
+curl -LO https://github.com/marceelrf/cpg/releases/latest/download/cpg-macos-aarch64
+chmod +x cpg-macos-aarch64
+mv cpg-macos-aarch64 ~/.local/bin/cpg
+```
+
+**Windows** — download `cpg-windows-x86_64.exe` from the releases page.
+
 
 ## Subcommands
 
