@@ -73,3 +73,8 @@ Metrics: `cg_count`, `gc_percent`, `obs_exp`.
 ## Output formats
 
 All subcommands accept `--output table|tsv|json` (global flag).
+
+
+# Funding
+
+We thank [FAPESP](https://fapesp.br/)(2025/28063-3) and [CAPES](http://capes.gov.br/)(PIPD 88887.114278/2025-00) for the financial support.
