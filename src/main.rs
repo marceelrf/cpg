@@ -1,6 +1,5 @@
 use clap::Parser;
 
-
 use cpg::cli::{Cli, Commands};
 
 fn main() -> anyhow::Result<()> {

@@ -1,4 +1,4 @@
-/// Raw counts for a nucleotide slice (ASCII, case-insensitive).
+/// Raw nucleotide/dinucleotide counts for a sequence slice.
 #[derive(Debug, Default, Clone, Copy)]
 pub struct RawCounts {
     pub n:        usize,
@@ -7,7 +7,7 @@ pub struct RawCounts {
     pub cg_count: usize,
 }
 
-/// Scan `seq` once and return raw nucleotide/dinucleotide counts.
+/// Scan `seq` once and return raw counts.
 pub fn count(seq: &[u8]) -> RawCounts {
     let n = seq.len();
     let mut rc = RawCounts { n, ..Default::default() };
@@ -34,27 +34,19 @@ pub fn gc_fraction(rc: &RawCounts) -> f64 {
     (rc.c_count + rc.g_count) as f64 / rc.n as f64
 }
 
-/// Observed/Expected CpG ratio.
-///
-/// Formula: (CpG × N) / (C × G)
-/// Returns 0.0 when C or G count is zero.
+/// Observed/Expected CpG ratio: (CpG × N) / (C × G).
 pub fn obs_exp(rc: &RawCounts) -> f64 {
     if rc.c_count == 0 || rc.g_count == 0 { return 0.0; }
     (rc.cg_count as f64 * rc.n as f64)
         / (rc.c_count as f64 * rc.g_count as f64)
 }
 
-/// Convenience: count + derive metrics in one call.
-///
+/// Convenience: count + derive all metrics in one call.
 /// Returns `(length, cg_count, gc_fraction, obs_exp)`.
 pub fn compute(seq: &[u8]) -> (usize, usize, f64, f64) {
     let rc = count(seq);
     (rc.n, rc.cg_count, gc_fraction(&rc), obs_exp(&rc))
 }
-
-// ---------------------------------------------------------------------------
-// Tests
-// ---------------------------------------------------------------------------
 
 #[cfg(test)]
 mod tests {
@@ -70,17 +62,14 @@ mod tests {
 
     #[test]
     fn pure_cg_repeat() {
-        // CGCGCG — 3 CpG, C=3, G=3, N=6
         let (n, cg, gc, oe) = compute(b"CGCGCG");
         assert_eq!((n, cg), (6, 3));
         assert!((gc - 1.0).abs() < 1e-12);
-        // (3 * 6) / (3 * 3) = 2.0
         assert!((oe - 2.0).abs() < 1e-12);
     }
 
     #[test]
-    fn no_cpg_dinucleotide() {
-        // GC has G then C — not a CpG (which is C then G)
+    fn gc_is_not_cpg() {
         let (_, cg, _, _) = compute(b"GCGCGC");
         assert_eq!(cg, 0);
     }

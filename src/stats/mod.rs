@@ -7,10 +7,6 @@ use std::{fs::File, io::BufReader};
 
 use crate::cli::OutputFormat;
 
-// ---------------------------------------------------------------------------
-// Data model
-// ---------------------------------------------------------------------------
-
 #[derive(Debug, Serialize)]
 pub struct SequenceStats {
     pub id:         String,
@@ -33,10 +29,6 @@ impl SequenceStats {
     }
 }
 
-// ---------------------------------------------------------------------------
-// Subcommand runner
-// ---------------------------------------------------------------------------
-
 pub fn run(input: &str, fmt: &OutputFormat) -> Result<()> {
     let reader = fasta::Reader::new(BufReader::new(File::open(input)?));
     let records: Vec<SequenceStats> = reader
@@ -58,7 +50,7 @@ pub fn run(input: &str, fmt: &OutputFormat) -> Result<()> {
                     s.id, s.length, s.cg_count, s.gc_percent, s.obs_exp);
             }
         }
-        OutputFormat::Table => {
+        OutputFormat::Table | OutputFormat::Bed | OutputFormat::Bedgraph => {
             println!("{:<25} {:>10} {:>10} {:>10} {:>10}",
                 "ID", "Length", "CG_count", "GC%", "Obs/Exp");
             println!("{}", "─".repeat(69));

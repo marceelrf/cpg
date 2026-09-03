@@ -1,8 +1,4 @@
-// ---------------------------------------------------------------------------
-// Trait
-// ---------------------------------------------------------------------------
-
-/// Defines the three thresholds that classify a sequence window as a CpG island.
+/// Defines the three thresholds that classify a window as a CpG island.
 ///
 /// Implement this trait to supply your own criteria:
 ///
@@ -17,25 +13,12 @@
 /// }
 /// ```
 pub trait Criteria: Send + Sync {
-    /// Minimum window length (bp) to be considered an island.
     fn min_length(&self)  -> usize;
-    /// Minimum GC content, as a fraction in `[0.0, 1.0]`.
     fn min_gc(&self)      -> f64;
-    /// Minimum observed/expected CpG ratio.
     fn min_obs_exp(&self) -> f64;
 }
 
-// ---------------------------------------------------------------------------
-// Gardiner-Garden & Frommer (1987)
-// ---------------------------------------------------------------------------
-
-/// Classic definition — Gardiner-Garden & Frommer, *J. Mol. Biol.* 1987.
-///
-/// | Parameter | Threshold |
-/// |-----------|-----------|
-/// | Length    | ≥ 200 bp  |
-/// | GC%       | ≥ 50 %    |
-/// | Obs/Exp   | ≥ 0.60    |
+/// Gardiner-Garden & Frommer (1987) — len≥200, GC≥50%, O/E≥0.60
 #[derive(Debug, Clone, Default)]
 pub struct GardinerFrommer;
 
@@ -45,17 +28,7 @@ impl Criteria for GardinerFrommer {
     fn min_obs_exp(&self) -> f64   { 0.60 }
 }
 
-// ---------------------------------------------------------------------------
-// Takai & Jones (2002)
-// ---------------------------------------------------------------------------
-
-/// Stricter definition — Takai & Jones, *PNAS* 2002.
-///
-/// | Parameter | Threshold |
-/// |-----------|-----------|
-/// | Length    | ≥ 500 bp  |
-/// | GC%       | ≥ 55 %    |
-/// | Obs/Exp   | ≥ 0.65    |
+/// Takai & Jones (2002) — len≥500, GC≥55%, O/E≥0.65
 #[derive(Debug, Clone, Default)]
 pub struct TakaiJones;
 
@@ -65,11 +38,7 @@ impl Criteria for TakaiJones {
     fn min_obs_exp(&self) -> f64   { 0.65 }
 }
 
-// ---------------------------------------------------------------------------
-// Custom (user-supplied via CLI flags)
-// ---------------------------------------------------------------------------
-
-/// Fully custom thresholds, built from CLI `--min-*` flags.
+/// User-defined thresholds supplied via CLI flags.
 #[derive(Debug, Clone)]
 pub struct CustomCriteria {
     pub min_length:  usize,
@@ -83,14 +52,6 @@ impl Criteria for CustomCriteria {
     fn min_obs_exp(&self) -> f64   { self.min_obs_exp }
 }
 
-// ---------------------------------------------------------------------------
-// Factory
-// ---------------------------------------------------------------------------
-
-/// Parse a preset name into a `Box<dyn Criteria>`.
-///
-/// Accepted (case-insensitive): `"gardiner"`, `"takai"`.
-/// Returns `None` for unknown names.
 pub fn from_preset(name: &str) -> Option<Box<dyn Criteria>> {
     match name.to_lowercase().as_str() {
         "gardiner" => Some(Box::new(GardinerFrommer)),
@@ -100,11 +61,6 @@ pub fn from_preset(name: &str) -> Option<Box<dyn Criteria>> {
 }
 
 /// Build the effective `Criteria` from CLI arguments.
-///
-/// Priority:
-/// 1. Any `--min-*` flag → `CustomCriteria` (preset values as baseline).
-/// 2. `--criteria <preset>` only → use that preset.
-/// 3. Nothing supplied → `GardinerFrommer` (default).
 pub fn resolve(
     preset:      Option<&str>,
     min_length:  Option<usize>,
@@ -114,7 +70,7 @@ pub fn resolve(
     let base: Box<dyn Criteria> = match preset {
         Some(name) => from_preset(name).ok_or_else(|| {
             anyhow::anyhow!(
-                "Unknown criteria preset '{name}'. Valid options: gardiner, takai"
+                "Unknown preset '{name}'. Valid options: gardiner, takai"
             )
         })?,
         None => Box::new(GardinerFrommer),

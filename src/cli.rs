@@ -2,11 +2,11 @@ use clap::{Parser, Subcommand, ValueEnum};
 
 #[derive(Parser)]
 #[command(
-    name        = "cpg",
+    name       = "cpg",
     version,
-    about       = "CpG island analysis toolkit",
-    long_about  = "Detect CpG islands, compute sequence statistics, and profile \
-                   metrics in sliding windows — all from FASTA input."
+    about      = "CpG island analysis toolkit",
+    long_about = "Detect CpG islands, compute sequence statistics, and profile \
+                  metrics in sliding windows — all from FASTA input."
 )]
 pub struct Cli {
     /// Output format
@@ -17,11 +17,15 @@ pub struct Cli {
     pub command: Commands,
 }
 
-#[derive(Clone, ValueEnum)]
+#[derive(Clone, ValueEnum, Debug)]
 pub enum OutputFormat {
     Table,
     Json,
     Tsv,
+    /// Genomic regions (finder only)
+    Bed,
+    /// Per-window values (profiler only)
+    Bedgraph,
 }
 
 #[derive(Subcommand)]
@@ -30,10 +34,10 @@ pub enum Commands {
     ///
     /// Built-in presets (--criteria):
     ///   gardiner  — Gardiner-Garden & Frommer 1987 (len≥200, GC≥50%, O/E≥0.60)
-    ///   takai     — Takai & Jones 2002            (len≥500, GC≥55%, O/E≥0.65)
+    ///   takai     — Takai & Jones 2002             (len≥500, GC≥55%, O/E≥0.65)
     ///
-    /// Any flag (--min-length, --min-gc, --min-obs-exp) overrides the preset value.
-    /// Omitting --criteria AND all override flags defaults to "gardiner".
+    /// Any --min-* flag overrides the preset value.
+    /// Omitting --criteria and all override flags defaults to "gardiner".
     Finder {
         /// Input FASTA file
         #[arg(short, long)]
