@@ -13,6 +13,10 @@ pub struct Cli {
     #[arg(long, global = true, default_value = "table", value_enum)]
     pub output: OutputFormat,
 
+    /// Number of threads (default: all available cores)
+    #[arg(long, global = true, value_name = "N")]
+    pub threads: Option<usize>,
+
     #[command(subcommand)]
     pub command: Commands,
 }

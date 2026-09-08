@@ -1,9 +1,16 @@
 use clap::Parser;
-
+use rayon;
 use cpg::cli::{Cli, Commands};
 
 fn main() -> anyhow::Result<()> {
     let cli = Cli::parse();
+
+    if let Some(n) = cli.threads {
+        rayon::ThreadPoolBuilder::new()
+            .num_threads(n)
+            .build_global()
+            .map_err(|e| anyhow::anyhow!("Failed to build thread pool: {e}"))?;
+    }
 
     match cli.command {
         Commands::Finder {
