@@ -40,7 +40,8 @@ mv cpg-macos-aarch64 ~/.local/bin/cpg
 ```bash
 # Built-in preset (default: Gardiner-Garden & Frommer 1987)
 # Default: Gardiner-Garden & Frommer 1987
-cpg finder -i genome.fa
+# The thread number default is 4
+cpg finder -i genome.fa --threads 3
 
 # Takai & Jones 2002
 cpg finder -i genome.fa --criteria takai
