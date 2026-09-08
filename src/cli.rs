@@ -14,8 +14,8 @@ pub struct Cli {
     pub output: OutputFormat,
 
     /// Number of threads (default: all available cores)
-    #[arg(long, global = true, value_name = "N")]
-    pub threads: Option<usize>,
+    #[arg(long, global = true, value_name = "N", default_value_t = 4)]
+    pub threads: usize,
 
     #[command(subcommand)]
     pub command: Commands,
