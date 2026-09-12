@@ -3,7 +3,13 @@ name = "cpg"
 version = "0.2.0"
 edition = "2021"
 description = "CpG island analysis toolkit"
-authors = ["Marcel Ferreira <marceelrf@gmail.com>"]
+authors = ["Marcel Ferreira <marceelrf@marceelrf>"]
+license     = "MIT"
+repository  = "https://github.com/marceelrf/cpg"
+homepage    = "https://github.com/marceelrf/cpg"
+keywords    = ["bioinformatics", "genomics", "cpg"]
+categories  = ["command-line-utilities", "science"]
+readme      = "README.md"
 
 [[bin]]
 name = "cpg"
