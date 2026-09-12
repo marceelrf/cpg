@@ -274,7 +274,7 @@ dependencies = [
 ]
 
 [[package]]
-name = "cpg"
+name = "cpg-bio"
 version = "0.2.2"
 dependencies = [
  "anyhow",
