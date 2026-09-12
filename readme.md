@@ -5,13 +5,13 @@ three subcommands: island detection, sequence statistics, and sliding-window pro
 
 ## Install
 
-<!--
-```bash
-# Soon
-# cargo install --path .
-```
--->
+### Install via cargo (You must have Rust installed)
 
+```bash
+cargo install cpg-bio
+```
+
+### Precompiled binary
 
 Download the binary for your system from the
 [latest release](https://github.com/marceelrf/cpg/releases/latest):
