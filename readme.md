@@ -38,10 +38,8 @@ mv cpg-macos-aarch64 ~/.local/bin/cpg
 ### `finder` — detect CpG islands
 
 ```bash
-# Built-in preset (default: Gardiner-Garden & Frommer 1987)
-# Default: Gardiner-Garden & Frommer 1987
-# The thread number default is 4
-cpg finder -i genome.fa --threads 3
+# Default: Gardiner-Garden & Frommer 1987, 4 threads
+cpg finder -i genome.fa
 
 # Takai & Jones 2002
 cpg finder -i genome.fa --criteria takai
@@ -54,6 +52,15 @@ cpg finder -i genome.fa --criteria takai --min-length 300
 
 # BED output — open directly in IGV or bedtools
 cpg finder -i genome.fa --output bed > islands.bed
+
+# Filter results to a specific genomic region
+cpg finder -i genome.fa --region chr1:1000000-2000000
+
+# Use the RunningSum algorithm (CpGcluster-style)
+cpg finder -i genome.fa --algorithm runningsum
+
+# Combine: RunningSum + region filter + BED output
+cpg finder -i genome.fa --algorithm runningsum --region chr1:1000000-2000000 --output bed
 ```
 
 Built-in presets:
@@ -62,6 +69,29 @@ Built-in presets:
 |------------|--------|------|---------|
 | `gardiner` | ≥ 200  | ≥ 50 | ≥ 0.60  |
 | `takai`    | ≥ 500  | ≥ 55 | ≥ 0.65  |
+
+#### `--region` flag
+
+Restricts output to islands that overlap a given genomic interval.
+Format: `chrom:start-end` (0-based, same convention as BED).
+
+```bash
+cpg finder -i genome.fa --region chr1:1000000-2000000
+cpg finder -i genome.fa -r chr1:1000000-2000000          # short form
+```
+
+The chromosome name must match the sequence ID in the FASTA header exactly.
+No index (`.fai`) is required — the full FASTA is read and results are
+filtered after detection.
+
+#### `--algorithm` flag
+
+| Algorithm      | Description |
+|----------------|-------------|
+| `slidingwindow` | *(default)* Seed-and-extend: scans the sequence in windows of `min_length`, extends any seed that meets GC and Obs/Exp thresholds, and merges overlapping islands. |
+| `runningsum`    | CpGcluster-style scoring (Hackenberg et al. 2006): each CpG dinucleotide adds +17 to a running score; each non-CpG base subtracts 1. An island opens when the score exceeds 0 and closes when it returns to 0. Results are filtered by the active criteria. |
+
+Both algorithms respect all `--criteria` / `--min-*` flags and all output formats.
 
 ### `stats` — per-sequence statistics
 
@@ -88,6 +118,15 @@ cpg profiler -i genome.fa -w 200 -s 50 -m obs_exp --output bedgraph > profile.be
 
 Metrics: `cg_count`, `gc_percent`, `obs_exp`.
 
+## Global flags
+
+These flags work with every subcommand:
+
+| Flag        | Default | Description                              |
+|-------------|---------|------------------------------------------|
+| `--output`  | `table` | Output format (see table below)          |
+| `--threads` | `4`     | Number of threads (`0` = all available)  |
+
 ## Output formats
 
 | Format      | Available in       | Use case                          |
@@ -97,8 +136,6 @@ Metrics: `cg_count`, `gc_percent`, `obs_exp`.
 | `json`      | all               | downstream scripts                |
 | `bed`       | finder            | IGV, bedtools, UCSC               |
 | `bedgraph`  | profiler          | IGV, UCSC Genome Browser          |
-
-All subcommands accept `--output` as a global flag.
 
 
 # Funding
