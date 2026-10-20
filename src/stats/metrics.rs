@@ -70,7 +70,9 @@ mod tests {
 
     #[test]
     fn gc_is_not_cpg() {
-        let (_, cg, _, _) = compute(b"GCGCGC");
+        // "GC" alone is not a CpG dinucleotide (needs C followed by G).
+        // Use a sequence with only G→C transitions, no C→G.
+        let (_, cg, _, _) = compute(b"GGGCCC");
         assert_eq!(cg, 0);
     }
 

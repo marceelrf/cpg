@@ -17,12 +17,16 @@ fn main() -> anyhow::Result<()> {
             min_length,
             min_gc,
             min_obs_exp,
+            region,
+            algorithm,
         } => cpg::finder::run(
             &input,
             criteria.as_deref(),
             min_length,
             min_gc,
             min_obs_exp,
+            region.as_deref(),
+            &algorithm,
             &cli.output,
         ),
 

@@ -63,6 +63,14 @@ pub enum Commands {
         /// Override minimum observed/expected CpG ratio
         #[arg(long, value_name = "RATIO")]
         min_obs_exp: Option<f64>,
+
+        /// Filter results to a genomic region  (e.g. chr1:1000-5000)
+        #[arg(short, long, value_name = "REGION")]
+        region: Option<String>,
+
+        /// Island-detection algorithm: slidingwindow | runningsum  [default: slidingwindow]
+        #[arg(long, value_name = "ALGO", default_value = "slidingwindow")]
+        algorithm: String,
     },
 
     /// Compute per-sequence statistics: length, CG count, GC%, Obs/Exp
